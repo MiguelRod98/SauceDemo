@@ -293,7 +293,7 @@ La carpeta `database/` contiene:
 
 **Windows:**
 ```bash
-run-queries.bat
+.\run-queries.bat
 ```
 
 **Linux/Mac:**
@@ -304,10 +304,79 @@ chmod +x run-queries.sh
 
 Esto iniciará PostgreSQL en Docker y ejecutará automáticamente todos los scripts SQL.
 
+**Salida esperada:**
+```
+========================================
+  Validacion de Queries SQL
+========================================
+
+[1/3] Iniciando PostgreSQL con Docker...
+[+] up 1/1
+ ✔ Container saucedemo-db Running
+[2/3] Esperando que PostgreSQL este listo...
+[3/3] Ejecutando Queries...
+
+=== Query 1: Clientes Sucursal Norte (ultimo mes) ===
+ nombre_completo  
+------------------
+ Ana López
+ Carlos Rodríguez
+ Carlos Rodríguez
+ Diego Ramírez
+ María González
+(5 rows)
+
+=== Query 2: Clientes por Sucursal (DESC) ===
+      sucursal      |    ciudad    | clientes_distintos 
+--------------------+--------------+--------------------
+ Sucursal Norte     | Bogotá       |                  4
+ Sucursal Centro    | Medellín     |                  3
+ Sucursal Sur       | Bogotá       |                  2
+ Sucursal Poblado   | Medellín     |                  2
+ Sucursal Valle     | Cali         |                  2
+ Sucursal Costa     | Barranquilla |                  1
+(10 rows)
+
+=== Query 3: Productos Medellin NO Bogota ===
+         nombre         | tipoproducto 
+------------------------+--------------
+ CrossFit               | Clase
+ Entrenamiento Personal | Servicio
+ Pilates                | Clase
+(3 rows)
+
+=== Query 4: Clientes con mas de 2 productos ===
+ nombre | apellidos | cantidad_productos 
+--------+-----------+--------------------
+ Carlos | Rodríguez |                  4
+ Juan   | Martínez  |                  3
+ María  | González  |                  3
+(3 rows)
+
+=== Query 5: Ultima visita por cliente ===
+  nombre   | apellidos | ultima_sucursal  | ultima_fecha_visita 
+-----------+-----------+------------------+---------------------
+ Ana       | López     | Sucursal Norte   | 2026-01-26
+ Carlos    | Rodríguez | Sucursal Norte   | 2026-02-10
+ Diego     | Ramírez   | Sucursal Norte   | 2026-01-21
+ Juan      | Martínez  | Sucursal Valle   | 2026-01-06
+ Laura     | García    | Sucursal Costa   | 2026-01-11
+ María     | González  | Sucursal Poblado | 2026-02-12
+ Miguel    | Flores    | Sucursal Valle   | 2025-12-17
+ Pedro     | Hernández | Sucursal Poblado | 2026-02-08
+ Sofía     | Torres    | Sucursal Centro  | 2026-01-28
+ Valentina | Morales   | Sin visitas      | Sin visitas
+(10 rows)
+
+========================================
+  Queries ejecutados exitosamente!
+========================================
+```
+
 **O manualmente:**
 ```bash
 docker-compose up -d
-docker exec -it saucedemo-db psql -U postgres -d gym_spa_db
+docker exec saucedemo-db psql -U postgres -d gym_spa_db
 ```
 
 ### Opción 2: PostgreSQL Local
@@ -330,6 +399,25 @@ CREATE DATABASE gym_spa_db;
 \i database/query3_productos_medellin_no_bogota.sql
 \i database/query4_clientes_mas_2_productos.sql
 \i database/query5_ultima_visita_cliente.sql
+```
+
+### Opción 3: Ejecutar Queries Individuales con Docker
+
+```bash
+# Query 1: Clientes que visitaron "Sucursal Norte" en el último mes
+docker exec saucedemo-db psql -U postgres -d gym_spa_db -f /docker-entrypoint-initdb.d/query1_clientes_sucursal_norte.sql
+
+# Query 2: Cantidad de clientes distintos por sucursal (DESC)
+docker exec saucedemo-db psql -U postgres -d gym_spa_db -f /docker-entrypoint-initdb.d/query2_clientes_por_sucursal.sql
+
+# Query 3: Productos en Medellín pero NO en Bogotá
+docker exec saucedemo-db psql -U postgres -d gym_spa_db -f /docker-entrypoint-initdb.d/query3_productos_medellin_no_bogota.sql
+
+# Query 4: Clientes inscritos en más de 2 productos
+docker exec saucedemo-db psql -U postgres -d gym_spa_db -f /docker-entrypoint-initdb.d/query4_clientes_mas_2_productos.sql
+
+# Query 5: Última visita de cada cliente (o "Sin visitas")
+docker exec saucedemo-db psql -U postgres -d gym_spa_db -f /docker-entrypoint-initdb.d/query5_ultima_visita_cliente.sql
 ```
 
 ## ✨ Características
