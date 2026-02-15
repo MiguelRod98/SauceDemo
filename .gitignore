@@ -1,0 +1,41 @@
+# Node modules
+node_modules/
+
+# Test reports and artifacts
+reports/
+test-results/
+playwright-report/
+*.webm
+*.mp4
+
+# Screenshots (except examples)
+reports/screenshots/*.png
+
+# Videos
+reports/videos/
+
+# Playwright
+.playwright/
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local

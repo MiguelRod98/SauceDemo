@@ -1,0 +1,34 @@
+{
+  "name": "saucedemo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env HEADLESS=true cucumber-js",
+    "test:headed": "cucumber-js",
+    "test:headless": "cross-env HEADLESS=true cucumber-js",
+    "test:smoke": "cross-env HEADLESS=true cucumber-js --tags @smoke",
+    "test:regression": "cross-env HEADLESS=true cucumber-js --tags @regression",
+    "test:chrome": "cross-env HEADLESS=true BROWSER=chromium cucumber-js --profile chromium",
+    "test:firefox": "cross-env HEADLESS=true BROWSER=firefox cucumber-js --profile firefox",
+    "test:edge": "cross-env HEADLESS=true BROWSER=msedge cucumber-js --profile msedge",
+    "test:all-browsers": "cross-env HEADLESS=true npm-run-all --parallel test:chrome test:firefox test:edge",
+    "report": "node -e \"require('child_process').exec('start reports/cucumber-report.html')\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "E2E Automation with Playwright + Cucumber for SauceDemo",
+  "devDependencies": {
+    "@cucumber/html-formatter": "^23.0.0",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.2.3",
+    "cross-env": "^10.1.0",
+    "npm-run-all": "^4.1.5",
+    "playwright": "^1.58.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^9.6.0"
+  }
+}
