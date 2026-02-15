@@ -1,0 +1,102 @@
+name: Playwright + Cucumber E2E Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ${{ matrix.os }}
+    needs: smoke-tests
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            browser: chromium
+          - os: ubuntu-latest
+            browser: firefox
+          - os: windows-latest
+            browser: msedge
+          - os: macos-latest
+            browser: webkit
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Install Playwright browsers
+      run: npx playwright install ${{ matrix.browser }} --with-deps
+    
+    - name: Run all tests
+      run: npm test
+      env:
+        BROWSER: ${{ matrix.browser }}
+      continue-on-error: false
+    
+    - name: Upload test reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cucumber-reports-${{ matrix.os }}-${{ matrix.browser }}
+        path: reports/
+        retention-days: 7
+    
+    - name: Upload screenshots on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: screenshots-${{ matrix.os }}-${{ matrix.browser }}
+        path: reports/screenshots/
+        retention-days: 7
+    
+    - name: Upload videos
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: videos-${{ matrix.os }}-${{ matrix.browser }}
+        path: reports/videos/
+        retention-days: 3
+
+  smoke-tests:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Install Playwright browsers
+      run: npx playwright install chromium --with-deps
+    
+    - name: Run smoke tests
+      run: npm run test:smoke
+    
+    - name: Upload smoke test reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: smoke-test-reports
+        path: reports/
+        retention-days: 7
