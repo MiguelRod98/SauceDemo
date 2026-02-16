@@ -93,11 +93,11 @@ Encuentra productos disponibles en Medellín pero NO en Bogotá.
 
 **Resultado esperado**:
 ```
-id | nombre                    | tipoProducto
----|---------------------------|-------------
-6  | Pilates                   | Clase
-7  | CrossFit                  | Clase
-10 | Entrenamiento Personal    | Servicio
+nombre                    | tipoProducto
+--------------------------|-------------
+Pilates                   | Clase
+CrossFit                  | Clase
+Entrenamiento Personal    | Servicio
 ```
 
 ### Query 4: Clientes con Múltiples Productos
